@@ -12,25 +12,60 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { SignInFlow } from "../types";
 import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
+
+import { TriangleAlertIcon } from "lucide-react";
 interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
 }
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
+  const { signIn } = useAuthActions();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("密码不匹配");
+      return;
+    }
+    setPending(true);
+    signIn("password", { email, password, flow: "signUp" })
+      .catch(() => {
+        setError("注册失败，请检查您的邮箱和密码");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
+
+  const onProviderSignUp = (value: "google" | "github") => {
+    setPending(true);
+    signIn(value).finally(() => {
+      setPending(false);
+    });
+  };
+
   return (
     <Card className="w-full h-full p-8">
       <CardHeader className="px-0 pt-0">
         <CardTitle>注册以继续</CardTitle>
         <CardDescription>使用email或者其他服务登录以继续</CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="bg-destructive/15 rounded-md flex p-3 items-center gap-x-2 text-sm text-destructive mb-6">
+          <TriangleAlertIcon className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
 
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form className="space-y-2.5" onSubmit={onPasswordSignUp}>
           <Input
-            disabled={false}
+            disabled={pending}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -40,7 +75,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             required
           />
           <Input
-            disabled={false}
+            disabled={pending}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -66,8 +101,10 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         <Separator />
         <div className="flex flex-col gap-y-2.5">
           <Button
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => {
+              onProviderSignUp("google");
+            }}
             variant={"outline"}
             size="lg"
             className="w-full"
@@ -76,8 +113,10 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             使用google登录
           </Button>
           <Button
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => {
+              onProviderSignUp("github");
+            }}
             variant={"outline"}
             size="lg"
             className="w-full"

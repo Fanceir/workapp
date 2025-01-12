@@ -13,6 +13,7 @@ import { FaGithub } from "react-icons/fa";
 import { SignInFlow } from "../types";
 import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { TriangleAlertIcon } from"lucide-react";
 interface SignInCardProps {
   setState: (state: SignInFlow) => void;
 }
@@ -22,9 +23,20 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
   const [pending, setPending] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const onProviderSignIn = (value: "google" | "github") => {
-    setPending(true);
+  const [error,setError]=useState("");
 
+  const onPasswordSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+    signIn("password", { email, password ,flow:"signIn"}).catch(() => {
+        setError("登录失败，请检查您的邮箱和密码");
+      }).finally(()=>{
+        setPending(false);
+      })
+  }
+
+  const onProviderSignIn = (value: "google" | "github") => {
+    setPending(true); 
     signIn(value).finally(() => {
       setPending(false);
     });
@@ -36,9 +48,16 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         <CardTitle>登录以继续</CardTitle>
         <CardDescription>使用email或者其他服务以继续</CardDescription>
       </CardHeader>
+      {!!error&&(
+      <div className="bg-destructive/15 rounded-md flex p-3 items-center gap-x-2 text-sm text-destructive mb-6">
+      <TriangleAlertIcon className="size-4" />
+      <p>{error}</p>
+      </div>
+    )}
+
 
       <CardContent className="space-y-5 px-0 pb-0">
-        <form className="space-y-2.5">
+        <form className="space-y-2.5" onSubmit={onPasswordSignIn}>
           <Input
             disabled={pending}
             value={email}
