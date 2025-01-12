@@ -12,19 +12,23 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { SignInFlow } from "../types";
 import { useState } from "react";
-import { useAuthActions } from '@convex-dev/auth/react'
+import { useAuthActions } from "@convex-dev/auth/react";
 interface SignInCardProps {
   setState: (state: SignInFlow) => void;
 }
 
 export const SignInCard = ({ setState }: SignInCardProps) => {
-  const { signIn } = useAuthActions()
-  
+  const { signIn } = useAuthActions();
+  const [pending, setPending] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const onProviderSignIn = (value: 'google' | 'github') => {
-		signIn(value)
-	}
+  const onProviderSignIn = (value: "google" | "github") => {
+    setPending(true);
+
+    signIn(value).finally(() => {
+      setPending(false);
+    });
+  };
 
   return (
     <Card className="w-full h-full p-8">
@@ -36,7 +40,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
       <CardContent className="space-y-5 px-0 pb-0">
         <form className="space-y-2.5">
           <Input
-            disabled={false}
+            disabled={pending}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -46,7 +50,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             required
           />
           <Input
-            disabled={false}
+            disabled={pending}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -63,7 +67,9 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         <div className="flex flex-col gap-y-2.5">
           <Button
             disabled={false}
-            onClick={() => {}}
+            onClick={() => {
+              onProviderSignIn("google");
+            }}
             variant={"outline"}
             size="lg"
             className="w-full"
@@ -72,8 +78,8 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             使用google登录
           </Button>
           <Button
-            disabled={false}
-            onClick={()=>onProviderSignIn("github")}
+            disabled={pending}
+            onClick={() => onProviderSignIn("github")}
             variant={"outline"}
             size="lg"
             className="w-full"
