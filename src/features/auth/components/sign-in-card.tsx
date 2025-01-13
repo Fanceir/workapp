@@ -116,6 +116,15 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             注册一个
           </span>
         </p>
+        <p className="text-xs text-muted-foreground">
+          忘记密码了？
+          <span
+            onClick={() => setState("resetPassword")}
+            className="text-sky-700 hover:underline cursor-pointer"
+          >
+            重置密码
+          </span>
+        </p>
       </CardContent>
     </Card>
   );
