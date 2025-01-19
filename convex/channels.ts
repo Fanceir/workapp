@@ -33,3 +33,29 @@ export const get = query({
     return channels;
   },
 });
+export const create = mutation({
+  args: {
+    name: v.string(),
+    workspaceId: v.id("workspaces"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("unauthorized");
+    }
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
+      )
+      .unique();
+    if (!member || member.role !== "admin") {
+      throw new Error("unauthorized");
+    }
+    const channelId = await ctx.db.insert("channels", {
+      name: args.name,
+      workspaceId: args.workspaceId,
+    });
+    return channelId;
+  },
+});

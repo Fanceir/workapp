@@ -14,6 +14,7 @@ import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import WorkspaceSection from "./workspace-section";
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import UserItem from "./user-item";
+import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-model";
 export const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
   const { data: member, isLoading: memberLoading } = useCurrentMember({
@@ -28,6 +29,8 @@ export const WorkspaceSidebar = () => {
   const { data: members, isLoading: membersLoading } = useGetMembers({
     workspaceId,
   });
+  const [_open, setOpen] = useCreateChannelModal();
+
   if (workspaceLoading || memberLoading) {
     return (
       <div className="flex flex-col bg-[#6ab3f8]] h-full items-center justify-center">
@@ -55,7 +58,11 @@ export const WorkspaceSidebar = () => {
         <SidebarItem label="聊天" icon={MessageSquareText} id="chat" />
         <SidebarItem label="已发送" icon={SendHorizonal} id="drafts" />{" "}
       </div>
-      <WorkspaceSection label="频道" hint="新建频道" onNew={() => {}}>
+      <WorkspaceSection
+        label="频道"
+        hint="新建频道"
+        onNew={member.role === "admin" ? () => setOpen(true) : undefined}
+      >
         {channels?.map((item) => (
           <SidebarItem
             key={item._id}
@@ -65,14 +72,13 @@ export const WorkspaceSidebar = () => {
           />
         ))}
       </WorkspaceSection>
-      <WorkspaceSection label="成员" hint="创建新对话" onNew={() => {}}>
+      <WorkspaceSection
+        label="成员"
+        hint="创建新对话"
+        onNew={member.role === "admin" ? () => setOpen(true) : undefined}
+      >
         {members?.map((item) => (
-          <UserItem
-            key={item._id}
-            id={item._id}
-            label={item.user.name}
-            image={item.user.image}
-          />
+          <UserItem key={item._id} id={item._id} label={item.user.name} />
         ))}
       </WorkspaceSection>
     </div>
