@@ -6,7 +6,7 @@ export const Toolbar = () => {
   const workspaceId = useWorkspaceId();
   const { data } = useGetWorkspace({ id: workspaceId });
   return (
-    <nav className="bg-[#83C4FF] flex items-center justify-between h-10 p-1.5">
+    <nav className="bg-[#6ab3f8] flex items-center justify-between h-10 p-1.5">
       
       <div className="flex-1" />
       <div className="min-w[200px] max-[642px] grow-[2] shrink">

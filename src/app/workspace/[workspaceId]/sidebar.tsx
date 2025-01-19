@@ -11,7 +11,7 @@ import { usePathname } from "next/navigation";
 export const Sidebar = () => {
   const pathname = usePathname();
   return (
-    <aside className="w-[70px] h-full bg-[#83C4FF] flex flex-col gap-y-4 items-center pt-[9px] pb-4 ">
+    <aside className="w-[70px] h-full bg-[#6ab3f8] flex flex-col gap-y-4 items-center pt-[9px] pb-4 ">
       <WorkspaceSwitcher />
       <SidebarButton
         icon={HomeIcon}
