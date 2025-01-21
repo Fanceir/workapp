@@ -2,7 +2,7 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
-const genergateCode = () => {
+const generateCode = () => {
   const code = Array.from(
     { length: 6 },
     () => "0123456789abcdefghijklmnopqrstuvwxyz"[Math.floor(Math.random() * 36)]
@@ -18,7 +18,7 @@ export const create = mutation({
     if (!userId) {
       throw new Error("Unauthorized");
     }
-    const joinCode = genergateCode();
+    const joinCode = generateCode();
     const workspaceId = await ctx.db.insert("workspaces", {
       name: args.name,
       userId,
@@ -161,7 +161,9 @@ export const remove = mutation({
 });
 
 export const newJoinCode = mutation({
-  args: { id: v.id("workspaces") },
+  args: {
+    workspaceId: v.id("workspaces"),
+  },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
@@ -171,19 +173,21 @@ export const newJoinCode = mutation({
     const member = await ctx.db
       .query("members")
       .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", args.id).eq("userId", userId)
+        q.eq("workspaceId", args.workspaceId).eq("userId", userId)
       )
       .unique();
+
     if (!member || member.role !== "admin") {
       throw new Error("Unauthorized");
     }
 
-    const joinCode = genergateCode();
-    await ctx.db.patch(args.id, { joinCode });
-    return args.id;
+    const joinCode = generateCode();
+
+    await ctx.db.patch(args.workspaceId, { joinCode });
+
+    return args.workspaceId;
   },
 });
-
 export const join = mutation({
   args: { joinCode: v.string(), workspaceId: v.id("workspaces") },
   handler: async (ctx, args) => {

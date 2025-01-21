@@ -37,8 +37,7 @@ export const CreateChannelModal = () => {
       {
         onSuccess: (id) => {
           toast.success("频道创建成功");
-
-          //TODO :redirect to new channel
+          router.push(`/workspace/${workspaceId}/channel/${id}`);
           handleClose();
         },
         onError: () => {
@@ -51,7 +50,7 @@ export const CreateChannelModal = () => {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a channel</DialogTitle>
+          <DialogTitle>新增一个频道</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input

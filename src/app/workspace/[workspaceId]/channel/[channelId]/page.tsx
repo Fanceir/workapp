@@ -1,3 +1,5 @@
-export default function ChannelPage() {
-  return <div>ChannelPage</div>;
-}
+const ChannelIdPage = () => {
+  return <div>ChannelIdPage</div>;
+};
+
+export default ChannelIdPage;

@@ -37,7 +37,7 @@ export const InviteModal = ({
     }
 
     mutate(
-      { id: workspaceId },
+      { workspaceId: workspaceId },
       {
         onSuccess: () => {
           toast.success("新的邀请码已创建");

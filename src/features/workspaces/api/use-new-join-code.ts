@@ -4,7 +4,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 
 type ResponseType = Id<"workspaces"> | null;
-type RequestType = { id: Id<"workspaces"> };
+type RequestType = { workspaceId: Id<"workspaces"> };
 
 type Options = {
   onSuccess?: (data: ResponseType) => void;
