@@ -26,8 +26,8 @@ export const InviteModal = ({
 }: InviteModalProps) => {
   const workspaceId = useWorkspaceId();
   const [ConfirmDialog, confirm] = useConfirm(
-    "确定要创建一个新的邀请链接吗？",
-    "创建新的邀请链接时，旧的邀请链接将失效"
+    "确定要创建一个新的邀请码吗？",
+    "创建新的邀请链接时，旧的邀请码将失效"
   );
   const { mutate, isPending } = useNewJoinCode();
   const handleNewCode = async () => {
@@ -40,10 +40,10 @@ export const InviteModal = ({
       { id: workspaceId },
       {
         onSuccess: () => {
-          toast.success("新的邀请链接已创建");
+          toast.success("新的邀请码已创建");
         },
         onError: () => {
-          toast.error("创建新的邀请链接时出错");
+          toast.error("创建新的邀请码时出错");
         },
       }
     );
@@ -75,7 +75,7 @@ export const InviteModal = ({
             </div>
             <div className="flex justify-between items-center w-full">
               <Button onClick={handleNewCode} variant="outline">
-                创建一个新的邀请链接
+                创建一个新的邀请码
                 <RefreshCcw className="size-4 ml-2" />
               </Button>
               <DialogClose asChild>
