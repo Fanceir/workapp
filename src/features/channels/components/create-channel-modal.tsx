@@ -64,7 +64,7 @@ export const CreateChannelModal = () => {
             placeholder="频道"
           />
           <div className="flex justify-end">
-            <Button disabled={isPending}>Create</Button>
+            <Button disabled={isPending}>新建</Button>
           </div>
         </form>
       </DialogContent>
