@@ -1,5 +1,8 @@
 import Quill, { Delta, Op, QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/a11y-dark.css";
+import "quill/dist/quill.core.css";
 import {
   useEffect,
   useLayoutEffect,
@@ -14,7 +17,6 @@ import { ImageIcon, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Hint from "./hint";
 import { EmojiPopover } from "./emoji-popover";
-
 type EditorValue = {
   body: string;
   image: File | null;
@@ -65,8 +67,10 @@ const Editor = ({
         toolbar: [
           ["bold", "italic", "strike"],
           ["link"],
+          ["code-block"],
           [{ list: "ordered" }, { list: "bullet" }],
         ],
+        syntax: { hljs },
         keyboard: {
           bindings: {
             enter: {
@@ -79,40 +83,45 @@ const Editor = ({
               key: "Enter",
               shiftKey: true,
               handler: () => {
-                quill.insertText(quill.getSelection()?.index || 0, "\n");
+                quillRef.current?.insertText(
+                  quillRef.current.getSelection()?.index || 0,
+                  "\n"
+                );
               },
             },
           },
         },
       },
     };
-    const quill = new Quill(editorContainer, options);
-    quillRef.current = quill;
-    quillRef.current.focus();
-    if (innerRef) {
-      innerRef.current = quill;
-    }
-    quill.setContents(defaultValueRef.current);
-    setText(quill.getText());
-    quill.on(Quill.events.TEXT_CHANGE, () => {
-      setText(quill.getText());
-    });
-    return () => {
-      quill.off(Quill.events.TEXT_CHANGE);
-      if (container) {
-        container.innerHTML = "";
-      }
-      if (quillRef.current) {
-        quillRef.current = null;
-      }
+    if (typeof hljs !== "undefined") {
+      const quill = new Quill(editorContainer, options);
+      quillRef.current = quill;
+      quillRef.current.focus();
       if (innerRef) {
-        innerRef.current = null;
+        innerRef.current = quill;
       }
-    };
+      quill.setContents(defaultValueRef.current);
+      setText(quill.getText());
+      quill.on(Quill.events.TEXT_CHANGE, () => {
+        setText(quill.getText());
+      });
+      return () => {
+        quill.off(Quill.events.TEXT_CHANGE);
+        if (container) {
+          container.innerHTML = "";
+        }
+        if (quillRef.current) {
+          quillRef.current = null;
+        }
+        if (innerRef) {
+          innerRef.current = null;
+        }
+      };
+    }
   }, [innerRef]);
 
   const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
-  const onEmojiSelect = (emoji: any) => {
+  const onEmojiSelect = (emoji: { native: string }) => {
     const quill = quillRef.current;
     quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
   };

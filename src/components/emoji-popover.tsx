@@ -12,7 +12,7 @@ import {
 interface EmojiPopoverProps {
   children: React.ReactNode;
   hint?: string;
-  onEmojiSelect: (emoji: any) => void;
+  onEmojiSelect: (emoji: { id: string; name: string; native: string; unified: string; }) => void;
 }
 const ChineseTranslation = {
   search: "搜索",
@@ -52,7 +52,7 @@ export const EmojiPopover = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const onSelect = (emoji: any) => {
+  const onSelect = (emoji: { id: string; name: string; native: string; unified: string; }) => {
     onEmojiSelect(emoji);
     setPopoverOpen(false);
 
