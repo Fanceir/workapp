@@ -4,7 +4,7 @@ import { IconType } from "react-icons/lib";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-interface SiderbarItemProps {
+interface SidebarItemProps {
   label: string;
   id: string;
   icon: LucideIcon | IconType;
@@ -31,7 +31,7 @@ export const SidebarItem = ({
   id,
   icon: Icon,
   variant,
-}: SiderbarItemProps) => {
+}: SidebarItemProps) => {
   const workspaceId = useWorkspaceId();
 
   return (

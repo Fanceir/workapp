@@ -1,9 +1,9 @@
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useCallback, useState, useMemo } from "react";
-type ResponenseType = string | null;
+type ResponseType = string | null;
 type Options = {
-  onSuccess?: (data: ResponenseType) => void;
+  onSuccess?: (data: ResponseType) => void;
   onError?: (error: Error) => void;
   onSettled?: () => void;
   throwError?: boolean;

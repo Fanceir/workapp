@@ -45,11 +45,20 @@ export const create = mutation({
       }
     }
     // 处理conversation ID
+    let _conversationId = args.conversationId;
+    if (!args.conversationId && !args.channelId && args.parentMessageId) {
+      const parentMessage = await ctx.db.get(args.parentMessageId);
+      if (!parentMessage) {
+        throw new Error("无法找到消息");
+      }
+      _conversationId = parentMessage.conversationId;
+    }
     const messageId = await ctx.db.insert("messages", {
       memberId: member._id,
       body: args.body,
       image: args.image,
       channelId: args.channelId,
+      conversationId: _conversationId,
       workspaceId: args.workspaceId,
       parentMessageId: args.parentMessageId,
     });
