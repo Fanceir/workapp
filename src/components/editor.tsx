@@ -35,6 +35,7 @@ interface EditorProps {
 const Editor = ({
   variant = "create",
   onSubmit,
+  onCancel,
   placeholder = "写一些东西",
   defaultValue = [],
   disabled = false,
@@ -51,12 +52,14 @@ const Editor = ({
   const defaultValueRef = useRef(defaultValue);
   const disabledRef = useRef(disabled);
   const imageElementRef = useRef<HTMLInputElement>(null);
+  const cancelRef = useRef(onCancel);
   useLayoutEffect(() => {
     placeHoderRef.current = placeholder;
     submitRef.current = onSubmit;
+    cancelRef.current = onCancel;
     defaultValueRef.current = defaultValue;
     disabledRef.current = disabled;
-  }, [placeholder, onSubmit, defaultValue, disabled]);
+  }, [placeholder, onSubmit, defaultValue, onCancel, disabled]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -81,7 +84,15 @@ const Editor = ({
             enter: {
               key: "Enter",
               handler: () => {
-                //TODO: handle enter key
+                const text = quill.getText();
+                const addedImage = imageElementRef.current?.files?.[0] || null;
+                const isEmpty =
+                  !addedImage &&
+                  text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+                if (isEmpty) return;
+                const body = JSON.stringify(quill.getContents());
+                submitRef.current({ body, image: addedImage });
+                return;
               },
             },
             "shift enter": {
@@ -98,34 +109,33 @@ const Editor = ({
         },
       },
     };
-    if (typeof hljs !== "undefined") {
-      const quill = new Quill(editorContainer, options);
-      quillRef.current = quill;
-      quillRef.current.focus();
-      if (innerRef) {
-        innerRef.current = quill;
-      }
-      quill.setContents(defaultValueRef.current);
-      setText(quill.getText());
-      quill.on(Quill.events.TEXT_CHANGE, () => {
-        setText(quill.getText());
-      });
-      return () => {
-        quill.off(Quill.events.TEXT_CHANGE);
-        if (container) {
-          container.innerHTML = "";
-        }
-        if (quillRef.current) {
-          quillRef.current = null;
-        }
-        if (innerRef) {
-          innerRef.current = null;
-        }
-      };
+
+    const quill = new Quill(editorContainer, options);
+    quillRef.current = quill;
+    quillRef.current.focus();
+    if (innerRef) {
+      innerRef.current = quill;
     }
+    quill.setContents(defaultValueRef.current);
+    setText(quill.getText());
+    quill.on(Quill.events.TEXT_CHANGE, () => {
+      setText(quill.getText());
+    });
+    return () => {
+      quill.off(Quill.events.TEXT_CHANGE);
+      if (container) {
+        container.innerHTML = "";
+      }
+      if (quillRef.current) {
+        quillRef.current = null;
+      }
+      if (innerRef) {
+        innerRef.current = null;
+      }
+    };
   }, [innerRef]);
 
-  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+  const isEmpty = !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
   const onEmojiSelect = (emoji: { native: string }) => {
     const quill = quillRef.current;
     quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
@@ -147,7 +157,12 @@ const Editor = ({
         onChange={(event) => setImage(event.target.files![0])}
         className="hidden"
       />
-      <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:border-slate-300 focus-within:shadow-sm transition bg-white">
+      <div
+        className={cn(
+          "flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:border-slate-300 focus-within:shadow-sm transition bg-white",
+          disabled && "opacity-50 "
+        )}
+      >
         <div ref={containerRef} className="h-full ql-custom" />
         {!!image && (
           <div className="p-2">
@@ -208,31 +223,43 @@ const Editor = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {}}
+                onClick={() => {
+                  onCancel?.();
+                }}
                 disabled={disabled}
               >
                 取消
               </Button>
               <Button
                 size="sm"
-                onClick={() => {}}
-                disabled={disabled}
+                onClick={() => {
+                  onSubmit({
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                    image,
+                  });
+                }}
+                disabled={disabled || isEmpty}
                 className=" bg-[#007a5a] hover:[#007a5a]/80 text-white"
               >
                 保存
               </Button>
             </div>
           )}
-          {variant == "create" && (
+          {variant === "create" && (
             <Button
               size="iconSm"
               disabled={disabled || isEmpty}
-              onClick={() => {}}
+              onClick={() => {
+                onSubmit({
+                  body: JSON.stringify(quillRef.current?.getContents()),
+                  image,
+                });
+              }}
               className={cn(
-                "ml-auto ",
+                "ml-auto",
                 isEmpty
                   ? " bg-white hover:bg-white text-muted-foreground"
-                  : " bg-[#007a5a] hover:[#007a5a]/80 text-white"
+                  : " bg-[#007a5a] hover:bg-[#007a5a]/80 text-white"
               )}
             >
               <MdSend className="size-4" />
