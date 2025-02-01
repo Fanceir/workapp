@@ -14,8 +14,8 @@ export const ResendOTP = Email({
     const { error } = await resend.emails.send({
       from: "verify <onboarding@resend.dev>",
       to: [email],
-      subject: `Sign in to My App`,
-      text: "Your code is " + token,
+      subject: `登录MyChat`,
+      text: "你的验证码是" + token,
     });
  
     if (error) {

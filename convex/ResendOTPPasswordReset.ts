@@ -1,24 +1,23 @@
-import Resend from "@auth/core/providers/resend";
-import { Resend as ResendAPI } from "resend";
+// ResendOTPPasswordReset.ts
+import { Email } from "@convex-dev/auth/providers/Email";
 import { alphabet, generateRandomString } from "oslo/crypto";
- 
-export const ResendOTPPasswordReset = Resend({
-  id: "resend-otp",
+import { Resend } from "resend";
+
+export const ResendOTPPasswordReset = Email({
+  id: "resend-otp-password-reset",
   apiKey: process.env.AUTH_RESEND_KEY,
   async generateVerificationToken() {
-    return generateRandomString(8, alphabet("0-9"));
+    return generateRandomString(8, alphabet("0-9")); // 8位数字验证码
   },
   async sendVerificationRequest({ identifier: email, provider, token }) {
-    const resend = new ResendAPI(provider.apiKey);
+    const resend = new Resend(provider.apiKey);
     const { error } = await resend.emails.send({
-      from: "verify <onboarding@resend.dev>",
+      from: process.env.AUTH_EMAIL ?? "My App <onboarding@resend.dev>",
       to: [email],
-      subject: `密码重置`,
-      text: "你的验证码是" + token,
+      subject: "重置密码验证码",
+      text: `您的重置密码验证码是：${token}`,
     });
- 
-    if (error) {
-      throw new Error("无法发送验证码");
-    }
+
+    if (error) throw new Error(JSON.stringify(error));
   },
 });
