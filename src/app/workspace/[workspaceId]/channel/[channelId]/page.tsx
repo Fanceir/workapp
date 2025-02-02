@@ -5,9 +5,13 @@ import { useChannelId } from "@/hooks/use-channel-id";
 import { Loader, TriangleAlert } from "lucide-react";
 import { Header } from "./header";
 import { ChatInput } from "./chat-input";
+import { useGetMessages } from "@/features/messages/api/use-get-messages";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
+
+  const { results } = useGetMessages({ channelId });
+  console.log(results);
   const { data: channel, isLoading: channelLoading } = useGetChannel({
     id: channelId,
   });
@@ -30,16 +34,7 @@ const ChannelIdPage = () => {
   return (
     <div className="flex flex-col h-full">
       <Header title={channel.name} />
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1 flex items-center justify-center">
-            <TriangleAlert className="size-5 text-muted-foreground"></TriangleAlert>
-            <span className="text-sm text-muted-foreground">
-              无法查找到消息
-            </span>
-          </div>
-        </div>
-      </div>
+      <div className="flex-1 flex flex-col">{JSON.stringify(results)}</div>
       <div className="flex-1 flex pb-0">
         <ChatInput placeholder={`在${channel.name}频道写些东西`} />
       </div>
