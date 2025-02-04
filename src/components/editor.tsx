@@ -46,7 +46,7 @@ const Editor = ({
   const [text, setText] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [isToolbarVisible, setToolbarVisible] = useState(false);
-  const placeHoderRef = useRef(placeholder);
+  const placeHolderRef = useRef(placeholder);
   const submitRef = useRef(onSubmit);
   const quillRef = useRef<Quill | null>(null);
   const defaultValueRef = useRef(defaultValue);
@@ -54,7 +54,7 @@ const Editor = ({
   const imageElementRef = useRef<HTMLInputElement>(null);
   const cancelRef = useRef(onCancel);
   useLayoutEffect(() => {
-    placeHoderRef.current = placeholder;
+    placeHolderRef.current = placeholder;
     submitRef.current = onSubmit;
     cancelRef.current = onCancel;
     defaultValueRef.current = defaultValue;
@@ -70,7 +70,7 @@ const Editor = ({
     );
     const options: QuillOptions = {
       theme: "snow",
-      placeholder: placeHoderRef.current,
+      placeholder: placeHolderRef.current,
       modules: {
         toolbar: [
           ["bold", "italic", "strike"],

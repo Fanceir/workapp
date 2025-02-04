@@ -25,6 +25,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "convex": "^1.17.2",
+    "date-fns": "^4.1.0",
     "highlight.js": "^11.11.1",
     "init": "^0.1.2",
     "jotai": "^2.11.0",

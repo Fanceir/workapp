@@ -148,3 +148,7 @@ body {
   padding: 8px !important;
   font-size: 14px !important;
 }
+.messages-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #dcdcdc #f8f8f8;
+}
