@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { update } from "../../convex/channels";
 import Thumbnail from "./thumbnail";
+import Toolbar from "./toolbar";
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 interface MessageProps {
   id: Id<"messages">;
@@ -49,6 +50,7 @@ export const Message = ({
   createdAt,
   updatedAt,
   isEditing,
+  setEditingId,
   isCompact,
   hideThreadButton,
   threadCount,
@@ -106,6 +108,19 @@ export const Message = ({
           ) : null}
         </div>
       </div>
+      {!isEditing && (
+        <Toolbar
+          isAuthor={isAuthor}
+          isPending={false}
+          handleEdit={() => {
+            setEditingId(id);
+          }}
+          handleReaction={() => {}}
+          handleThread={() => {}}
+          handleDelete={() => {}}
+          hideThreadButton={hideThreadButton}
+        />
+      )}
     </div>
   );
 };
