@@ -5,6 +5,7 @@ import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import { Message } from "./message";
 import { ChannelHero } from "./channel-hero";
 import { useState } from "react";
+import { Id } from "../../convex/_generated/dataModel";
 const TIME_THRESHOLD = 1;
 interface MessageListProps {
   memberName?: string;

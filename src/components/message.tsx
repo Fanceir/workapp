@@ -60,7 +60,7 @@ export const Message = ({
         <div className="flex items-start gap-2">
           <Hint label={formatFullTime(new Date(createdAt))}>
             <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
-              {format(new Date(createdAt), "HH:mm")}
+              {format(new Date(createdAt), "HH:mm ")}
             </button>
           </Hint>
           <div className="flex flex-col w-full">
@@ -96,9 +96,7 @@ export const Message = ({
             </button>
             <span>&nbsp;&nbsp;</span>
             <Hint label={formatFullTime(new Date(createdAt))}>
-              <button className="text-xs text-muted-foreground hover:underline">
-                {format(new Date(createdAt), "h:mm a")}
-              </button>
+              <button className="text-xs text-muted-foreground hover:underline"></button>
             </Hint>
           </div>
           <Renderer value={body} />
