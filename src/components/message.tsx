@@ -105,7 +105,6 @@ export const Message = ({
           if (parentMessageId === id) {
             onClose();
           }
-
         },
         onError: () => {
           toast.error("删除消息失败");
@@ -137,7 +136,7 @@ export const Message = ({
               "bg-rose-500/50 transform-all scale-y-0 origin-bottom duration-500"
           )}
         >
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-1">
             <Hint label={formatFullTime(new Date(createdAt))}>
               <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
                 {format(new Date(createdAt), "HH:mm ")}
@@ -195,7 +194,7 @@ export const Message = ({
             "bg-rose-500/50 transform-all scale-y-0 origin-bottom duration-500"
         )}
       >
-        <div className="flex items-start gap-2">
+        <div className="flex items-start gap-1">
           <button>
             <Avatar>
               <AvatarImage src={authorImage} className="rounded-md" />

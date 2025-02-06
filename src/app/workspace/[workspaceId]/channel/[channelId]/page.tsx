@@ -42,9 +42,7 @@ const ChannelIdPage = () => {
         isLoadingMore={status === "LoadingMore"}
         canLoadMore={status === "CanLoadMore"}
       />
-
-      
-        <ChatInput placeholder={`在${channel.name}频道写些东西`} />
+      <ChatInput placeholder={`在${channel.name}频道写些东西`} />
     </div>
   );
 };
