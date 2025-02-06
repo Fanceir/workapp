@@ -28,7 +28,7 @@ const formatDateLabel = (dateStr: string) => {
   if (isYesterday(date)) {
     return "昨天";
   }
-  return format(date, "EEEE, MMMM d");
+  return format(date, "yyyy-MM-dd");
 };
 export const MessageList = ({
   memberName,
@@ -104,6 +104,7 @@ export const MessageList = ({
           })}
         </div>
       ))}
+      {/* 加载更多*/}
       <div
         className="h-1"
         ref={(el) => {
@@ -131,6 +132,7 @@ export const MessageList = ({
           </span>
         </div>
       )}
+
       {variant === "channel" && channelName && channelCreationTime && (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
       )}

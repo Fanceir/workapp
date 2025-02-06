@@ -13,6 +13,7 @@ import { useRemoveMessage } from "@/features/messages/api/use-remove-message";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useToggleReactions } from "@/features/reactions/api/use-toggle-reaction";
 import { Reactions } from "./reactions";
+import { usePanel } from "@/hooks/use-panel";
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -65,6 +66,7 @@ export const Message = ({
   threadCount,
   threadImage,
 }: MessageProps) => {
+  const { parentMessageId, onOpenMessage, onClose } = usePanel();
   const [ConfirmDialog, confirm] = useConfirm(
     "删除这条消息",
     "你确定要删除这条消息吗？"
@@ -100,7 +102,10 @@ export const Message = ({
       {
         onSuccess: () => {
           toast.success("已删除消息");
-          //TODO: 关闭thread
+          if (parentMessageId === id) {
+            onClose();
+          }
+
         },
         onError: () => {
           toast.error("删除消息失败");
@@ -168,7 +173,7 @@ export const Message = ({
                 setEditingId(id);
               }}
               handleReaction={handleReaction}
-              handleThread={() => {}}
+              handleThread={() => onOpenMessage(id)}
               handleDelete={handleDelete}
               hideThreadButton={hideThreadButton}
             />
@@ -239,7 +244,7 @@ export const Message = ({
               setEditingId(id);
             }}
             handleReaction={handleReaction}
-            handleThread={() => {}}
+            handleThread={() => onOpenMessage(id)}
             handleDelete={handleDelete}
             hideThreadButton={hideThreadButton}
           />
