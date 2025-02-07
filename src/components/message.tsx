@@ -14,6 +14,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useToggleReactions } from "@/features/reactions/api/use-toggle-reaction";
 import { Reactions } from "./reactions";
 import { usePanel } from "@/hooks/use-panel";
+import ThreadBar from "./thread-bar";
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -65,8 +66,10 @@ export const Message = ({
   hideThreadButton,
   threadCount,
   threadImage,
+  threadTimestamp,
+  threadName,
 }: MessageProps) => {
-  const { parentMessageId, onOpenMessage, onClose } = usePanel();
+  const { parentMessageId, onOpenMessage, onClose, onOpenProfile } = usePanel();
   const [ConfirmDialog, confirm] = useConfirm(
     "删除这条消息",
     "你确定要删除这条消息吗？"
@@ -77,8 +80,7 @@ export const Message = ({
     useRemoveMessage();
   const { mutate: toggleReaction, isPending: isTogglingReaction } =
     useToggleReactions();
-
-  const isPending = isUpdatingMessage;
+  const isPending = isUpdatingMessage || isTogglingReaction;
   const handleUpdate = ({ body }: { body: string }) => {
     updateMessage(
       { id, body },
@@ -161,6 +163,13 @@ export const Message = ({
                   </span>
                 ) : null}
                 <Reactions data={reactions} onChange={handleReaction} />
+                <ThreadBar
+                  count={threadCount}
+                  image={threadImage}
+                  timestamp={threadTimestamp}
+                  name={threadName}
+                  onClick={() => onOpenMessage(id)}
+                />
               </div>
             )}
           </div>
@@ -195,7 +204,7 @@ export const Message = ({
         )}
       >
         <div className="flex items-start gap-1">
-          <button>
+          <button onClick={() => onOpenProfile(memberId)}>
             <Avatar>
               <AvatarImage src={authorImage} className="rounded-md" />
               <AvatarFallback className="rounded-md bg-sky-500 text-white text-xs">
@@ -232,6 +241,13 @@ export const Message = ({
               {updatedAt ? (
                 <span className="text-xs text-muted-foreground ">(已编辑)</span>
               ) : null}
+              <Reactions data={reactions} onChange={handleReaction} />
+              <ThreadBar
+                count={threadCount}
+                image={threadImage}
+                timestamp={threadTimestamp}
+                onClick={() => onOpenMessage(id)}
+              />
             </div>
           )}
         </div>
