@@ -36,7 +36,7 @@ const WorkspaceLayout = ({ children }: WorkspaceLayoutProps) => {
             <WorkspaceSidebar />
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel minSize={50}>{children}</ResizablePanel>
+          <ResizablePanel minSize={50} defaultSize={80}>{children}</ResizablePanel>
           {showPanel && (
             <>
               <ResizableHandle withHandle />
