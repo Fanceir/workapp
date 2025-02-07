@@ -21,7 +21,7 @@ export const Sidebar = () => {
       <SidebarButton icon={MessageSquare} label="消息中心" />
       <SidebarButton icon={BellIcon} label="消息提醒" />
       <SidebarButton icon={MoreHorizontal} label="更多" />
-      <div className=" flex flex-col items-center gap-y-1 justify-center mt-auto">
+      <div className=" flex flex-col items-center gap-y-1 justify-center mt-auto"> 
         <UserButton />
       </div>
     </aside>
