@@ -233,5 +233,3 @@ const Profile = ({ memberId, onClose }: ProfileProps) => {
   );
 };
 export default Profile;
-//ke4va8
-//http://localhost:3000/join/k577pb5qxm55t4z5gv91gt5b8d78pc53
