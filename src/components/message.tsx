@@ -15,6 +15,8 @@ import { useToggleReactions } from "@/features/reactions/api/use-toggle-reaction
 import { Reactions } from "./reactions";
 import { usePanel } from "@/hooks/use-panel";
 import ThreadBar from "./thread-bar";
+import { Loader } from "lucide-react";
+import { Suspense } from "react";
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -146,13 +148,21 @@ export const Message = ({
             </Hint>
             {isEditing ? (
               <div className="w-full h-full">
-                <Editor
-                  onSubmit={handleUpdate}
-                  disabled={isPending}
-                  defaultValue={JSON.parse(body)}
-                  onCancel={() => setEditingId(null)}
-                  variant="update"
-                />
+                <Suspense
+                  fallback={
+                    <div className="h-full flex items-center justify-center">
+                      <Loader className="size-6 animate-spin text-muted-foreground" />
+                    </div>
+                  }
+                >
+                  <Editor
+                    onSubmit={handleUpdate}
+                    disabled={isPending}
+                    defaultValue={JSON.parse(body)}
+                    onCancel={() => setEditingId(null)}
+                    variant="update"
+                  />
+                </Suspense>
               </div>
             ) : (
               <div className="flex flex-col w-full">
@@ -214,13 +224,21 @@ export const Message = ({
           </button>
           {isEditing ? (
             <div className="w-full h-full">
-              <Editor
-                onSubmit={handleUpdate}
-                disabled={isPending}
-                defaultValue={JSON.parse(body)}
-                onCancel={() => setEditingId(null)}
-                variant="update"
-              />
+              <Suspense
+                fallback={
+                  <div className="h-full flex items-center justify-center">
+                    <Loader className="size-6 animate-spin text-muted-foreground" />
+                  </div>
+                }
+              >
+                <Editor
+                  onSubmit={handleUpdate}
+                  disabled={isPending}
+                  defaultValue={JSON.parse(body)}
+                  onCancel={() => setEditingId(null)}
+                  variant="update"
+                />
+              </Suspense>
             </div>
           ) : (
             <div className="flex flex-col w-full overflow-hidden">
