@@ -4,9 +4,10 @@ import { useChannelId } from "@/hooks/use-channel-id";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Id } from "../../../../../../convex/_generated/dataModel";
+import { Loader } from "lucide-react";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface ChatInputProps {
@@ -72,14 +73,22 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
   };
   return (
     <div className="px-5 w-full">
-      <Editor
-        variant="create"
-        key={editorKey}
-        placeholder={placeholder}
-        onSubmit={handleSubmit}
-        disabled={pending}
-        innerRef={editorRef}
-      />
+      <Suspense
+        fallback={
+          <div className="h-full flex items-center justify-center">
+            <Loader className="size-6 animate-spin text-muted-foreground" />
+          </div>
+        }
+      >
+        <Editor
+          variant="create"
+          key={editorKey}
+          placeholder={placeholder}
+          onSubmit={handleSubmit}
+          disabled={pending}
+          innerRef={editorRef}
+        />
+      </Suspense>
     </div>
   );
 };
