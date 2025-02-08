@@ -148,16 +148,6 @@ body {
   padding: 0 !important;
 }
 
-.ql-editor:before {
-  left: 12px !important;
-  font-family: "Lato", sans-serif !important;
-  color: #8d8d8d !important;
-  font-style: normal !important;
-  font-size: 14px !important;
-  font-weight: 400 !important;
-  @apply truncate;
-}
-
 .messages-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #dcdcdc #f8f8f8;
