@@ -5,7 +5,7 @@ import { UseGetMessage } from "../api/use-get-message";
 import { Message } from "@/components/message";
 import { useCurrentMember } from "@/features/members/api/use-current-member";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import dynamic from "next/dynamic";
 import Quill from "quill";
 import { useCreateMessage } from "../api/use-create-message";
@@ -242,17 +242,25 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
             reactions={message.reactions}
             isEditing={editingId === message._id}
             setEditingId={setEditingId}
-          /> 
+          />
         </div>
       </div>
       <div className="px-4">
-        <Editor
-          key={editorKey}
-          onSubmit={handleSubmit}
-          innerRef={editorRef}
-          disabled={pending}
-          placeholder="回复消息..."
-        />
+        <Suspense
+          fallback={
+            <div className="h-full flex items-center justify-center">
+              <Loader className="size-6 animate-spin text-muted-foreground" />
+            </div>
+          }
+        >
+          <Editor
+            key={editorKey}
+            onSubmit={handleSubmit}
+            innerRef={editorRef}
+            disabled={pending}
+            placeholder="回复消息..."
+          />
+        </Suspense>
       </div>
     </div>
   );

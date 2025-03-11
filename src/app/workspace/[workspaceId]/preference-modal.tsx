@@ -31,11 +31,7 @@ const PreferencesModal = ({
 }: PreferencesModalProps) => {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
-  const [ConfirmDialog, confirm] = useConfirm(
-    "删除这个工作区",
-    "你确定要删除这个工作区吗？"
-  );
-
+  const confirmFn = useConfirm();
   const [value, setValue] = useState(initialValue);
   const [editOpen, setEditOpen] = useState(false);
 
@@ -60,7 +56,10 @@ const PreferencesModal = ({
     );
   };
   const handleRemove = async () => {
-    const ok = await confirm();
+    const confirm =
+      typeof confirmFn === "function" ? confirmFn : () => confirmFn;
+
+    const ok = await confirm("确定要删除工作区吗？", "删除后无法恢复");
     if (!ok) return;
     removeWorkspace(
       {
@@ -79,7 +78,6 @@ const PreferencesModal = ({
   };
   return (
     <>
-      <ConfirmDialog />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="p-0 bg-gray-50 overflow-hidden">
           <DialogHeader className="p-4 border-b bg-white">

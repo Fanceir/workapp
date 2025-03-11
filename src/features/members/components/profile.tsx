@@ -35,19 +35,13 @@ const Profile = ({ memberId, onClose }: ProfileProps) => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
 
-  const [LeaveDialog, confirmLeave] = useConfirm(
-    "离开这个频道",
-    "你确定要离开这个频道吗?"
-  );
-  const [RemoveDialog, confirmRemove] = useConfirm(
-    "删除成员",
-    "你确定要删除这个成员吗?"
-  );
-  const [UpdateDialog, confirmUpdate] = useConfirm(
-    "更改成员角色",
-    "你确定要更改这个成员的角色吗?"
-  );
+  const confirmFn = useConfirm();
+  const confirm = typeof confirmFn === "function" ? confirmFn : () => confirmFn;
 
+  const confirmLeave = () => confirm("离开工作区", "你确定要离开这个工作区吗?");
+  const confirmRemove = () => confirm("删除成员", "你确定要删除这个成员吗?");
+  const confirmUpdate = () =>
+    confirm("更改成员角色", "你确定要更改这个成员的角色吗?");
   const { data: currentMember, isLoading: isLoadingCurrentMember } =
     useCurrentMember({ workspaceId });
   const { data: member, isLoading: isLoadingMember } = useGetMember({
@@ -151,17 +145,14 @@ const Profile = ({ memberId, onClose }: ProfileProps) => {
 
   return (
     <>
-      <RemoveDialog />
-      <LeaveDialog />
-      <UpdateDialog />
       <div className="h-full flex flex-col">
         <div className="flex justify-between items-center px-4 h-[49px] border-b">
-          <p className="text-lg font-bold">Profile</p>
+          <p className="text-lg font-bold">主页</p>
           <Button onClick={onClose} size="iconSm" variant="ghost">
             <XIcon className="size-5 stroke-[1.5]" />
           </Button>
         </div>
-        <div className=" flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center justify-center p-4">
           <Avatar className="max-w-[256px] max-h-[256px] size-full">
             <AvatarImage src={member.user.image} />
             <AvatarFallback className="aspect-square text-6xl">

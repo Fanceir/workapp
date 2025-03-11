@@ -3,9 +3,10 @@ import { useGenerateUploadUrl } from "@/features/upload/api/use-generate-upload-
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Id } from "../../../../../../convex/_generated/dataModel";
+import { Loader } from "lucide-react";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 interface ChatInputProps {
@@ -20,7 +21,7 @@ type createMessageValues = {
   image: Id<"_storage"> | undefined;
 };
 
-export const ChatInput = ({ placeholder,conversationId }: ChatInputProps) => {
+export const ChatInput = ({ placeholder, conversationId }: ChatInputProps) => {
   const [editorKey, setEditorKey] = useState(0);
   const [pending, setIsPending] = useState(false);
   const editorRef = useRef<Quill | null>(null);
@@ -71,14 +72,22 @@ export const ChatInput = ({ placeholder,conversationId }: ChatInputProps) => {
   };
   return (
     <div className="px-5 w-full">
-      <Editor
-        variant="create"
-        key={editorKey}
-        placeholder={placeholder}
-        onSubmit={handleSubmit}
-        disabled={pending}
-        innerRef={editorRef}
-      />
+      <Suspense
+        fallback={
+          <div className="h-full flex items-center justify-center">
+            <Loader className="size-6 animate-spin text-muted-foreground" />
+          </div>
+        }
+      >
+        <Editor
+          variant="create"
+          key={editorKey}
+          placeholder={placeholder}
+          onSubmit={handleSubmit}
+          disabled={pending}
+          innerRef={editorRef}
+        />
+      </Suspense>
     </div>
   );
 };

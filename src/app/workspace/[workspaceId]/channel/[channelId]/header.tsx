@@ -28,7 +28,10 @@ export const Header = ({ title }: HeaderProps) => {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
   const channelId = useChannelId();
-  const [ConfirmDialog, confirm] = useConfirm(
+  const confirmFn = useConfirm();
+  const confirm = typeof confirmFn === "function" ? confirmFn : () => confirmFn;
+
+  const confirmed = confirm(
     "删除频道",
     "删除频道后，所有频道消息和文件将被永久删除。"
   );
@@ -48,7 +51,7 @@ export const Header = ({ title }: HeaderProps) => {
     }
   };
   const handleDelete = async () => {
-    const ok = await confirm();
+    const ok = await confirmed;
 
     if (!ok) return;
 
@@ -82,7 +85,6 @@ export const Header = ({ title }: HeaderProps) => {
   };
   return (
     <div className="bg-white border-b h-[49px] flex items-center px-4 overflow-hidden">
-      <ConfirmDialog />
       <Dialog>
         <DialogTrigger asChild>
           <Button
